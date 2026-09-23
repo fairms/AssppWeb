@@ -33,9 +33,25 @@ app.use("/api", settingsRoutes);
 app.use("/api", bagRoutes);
 app.use("/api", sapAssetRoutes);
 
-// Serve static frontend files
+// Serve static frontend files.
+//
+// Vite writes hashed, content-addressed bundles under assets/, so those can be
+// cached indefinitely. Everything else — index.html above all — must be
+// revalidated on every navigation. A browser that reuses a previous build's
+// HTML asks for chunk names the new build no longer ships, the dynamic import
+// 404s, and the page goes blank until the cache expires.
 const publicDir = path.resolve(import.meta.dirname, "../public");
-app.use(express.static(publicDir));
+app.use(
+  express.static(publicDir, {
+    setHeaders(res, filePath) {
+      if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      } else {
+        res.setHeader("Cache-Control", "no-cache, must-revalidate");
+      }
+    },
+  }),
+);
 
 // SPA fallback: serve index.html for non-API routes
 app.get("*", (req, res, next) => {
@@ -44,7 +60,10 @@ app.get("*", (req, res, next) => {
   }
   const indexPath = path.join(publicDir, "index.html");
   if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
+    // `cacheControl: false` stops send() from overwriting the header below
+    // with its own `public, max-age=0`.
+    res.setHeader("Cache-Control", "no-cache, must-revalidate");
+    res.sendFile(indexPath, { cacheControl: false });
   } else {
     next();
   }
