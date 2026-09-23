@@ -473,6 +473,7 @@
       "downloadSuccess": "Успешная загрузка",
       "downloadFailed": "Ошибка загрузки",
       "licenseSuccess": "Лицензия получена",
+      "licenseAlreadyOwned": "Лицензия уже есть",
       "licenseFailed": "Ошибка получения лицензии",
       "installStarted": "Начало установки",
       "shareAcquired": "Ссылка получена",
@@ -483,6 +484,7 @@
     "msg": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}",
     "msgShare": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}\n\nВы можете использовать AirDrop, чтобы поделиться ею с друзьями.",
     "msgFailed": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}\n\nОшибка: {{error}}",
+    "msgAlreadyOwned": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}\n\nУ этого Apple ID уже есть лицензия на это приложение. Повторно получать её не нужно — можно сразу скачать.",
     "downloadLimit": {
       "message": "{{appName}}\nРазмер приложения {{size}} МБ превышает лимит сервера {{limit}} МБ.\nПожалуйста, свяжитесь с администратором или разверните свой собственный сервер."
     }

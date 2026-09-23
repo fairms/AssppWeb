@@ -1,9 +1,25 @@
-import type { Account, Software } from "../types";
+import type { Account, Cookie, Software } from "../types";
 import { appleRequest } from "./request";
 import { buildPlist, parsePlist } from "./plist";
 import { extractAndMergeCookies } from "./cookies";
 import { purchaseAPIHost } from "./config";
 import i18n from "../i18n";
+
+// Apple's private purchase API reports "this account already holds a license
+// for this app" as failureType 5002 — ipatool names the very same value
+// FailureTypeLicenseAlreadyExists. It is not a failure: the account can
+// download the app straight away, so the flow must not report an error.
+export const LICENSE_ALREADY_EXISTS = "5002";
+
+export interface PurchaseResult {
+  updatedCookies: Cookie[];
+  /**
+   * True when the account already owned the app, so nothing was purchased and
+   * nothing needed to be. The caller should tell the user they can download
+   * directly rather than claim a new license was acquired.
+   */
+  alreadyOwned: boolean;
+}
 
 export class PurchaseError extends Error {
   constructor(
@@ -18,7 +34,7 @@ export class PurchaseError extends Error {
 export async function purchaseApp(
   account: Account,
   app: Software,
-): Promise<{ updatedCookies: typeof account.cookies }> {
+): Promise<PurchaseResult> {
   if ((app.price ?? 0) > 0) {
     throw new PurchaseError(i18n.t("errors.purchase.paidNotSupported"));
   }
@@ -38,7 +54,7 @@ async function purchaseWithParams(
   account: Account,
   app: Software,
   pricingParameters: string,
-): Promise<{ updatedCookies: typeof account.cookies }> {
+): Promise<PurchaseResult> {
   const deviceId = account.deviceIdentifier;
   const host = purchaseAPIHost(account.pod);
   const path = "/WebObjects/MZFinance.woa/wa/buyProduct";
@@ -82,7 +98,20 @@ async function purchaseWithParams(
     account.cookies,
   );
 
-  const dict = parsePlist(response.body) as Record<string, any>;
+  let dict: Record<string, any>;
+  try {
+    dict = parsePlist(response.body) as Record<string, any>;
+  } catch {
+    // Some storefronts answer an already-owned app with an empty HTTP 500
+    // instead of a plist carrying failureType 5002 — the same condition,
+    // reported differently. Any other unparseable body is a real failure.
+    if (response.status === 500 && !response.body.trim()) {
+      return { updatedCookies, alreadyOwned: true };
+    }
+    throw new PurchaseError(
+      `${i18n.t("errors.purchase.failedGeneral")} (HTTP ${response.status})`,
+    );
+  }
 
   if (dict.failureType) {
     const failureType = String(dict.failureType);
@@ -90,6 +119,12 @@ async function purchaseWithParams(
     switch (failureType) {
       case "2059":
         throw new PurchaseError(i18n.t("errors.purchase.unavailable"), "2059");
+      case LICENSE_ALREADY_EXISTS:
+        // The account already owns the app: there is nothing to buy and
+        // nothing to report as a failure. Apple sends a generic
+        // "An unknown error has occurred" alongside it, which is exactly how
+        // this used to surface to users as an unexplained error.
+        return { updatedCookies, alreadyOwned: true };
       case "2034":
       case "2042":
         throw new PurchaseError(
@@ -180,5 +215,5 @@ async function purchaseWithParams(
     throw new PurchaseError(i18n.t("errors.purchase.failedGeneral"));
   }
 
-  return { updatedCookies };
+  return { updatedCookies, alreadyOwned: false };
 }

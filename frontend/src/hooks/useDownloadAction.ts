@@ -106,6 +106,18 @@ export function useDownloadAction() {
     const result = await purchaseApp(currentAccount, app);
     await updateAccount({ ...currentAccount, cookies: result.updatedCookies });
 
+    // 5002 means the account already held a license. Nothing was purchased,
+    // but the user's goal is already met, so say so instead of implying a new
+    // license was created.
+    if (result.alreadyOwned) {
+      addToast(
+        t("toast.msgAlreadyOwned", { appName, ...ctx }),
+        "info",
+        t("toast.title.licenseAlreadyOwned"),
+      );
+      return;
+    }
+
     addToast(
       t("toast.msg", { appName, ...ctx }),
       "success",

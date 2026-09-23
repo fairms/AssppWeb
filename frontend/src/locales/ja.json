@@ -476,6 +476,7 @@
       "downloadSuccess": "ダウンロード成功",
       "downloadFailed": "ダウンロード失敗",
       "licenseSuccess": "ライセンス取得成功",
+      "licenseAlreadyOwned": "ライセンスは取得済みです",
       "licenseFailed": "ライセンス取得失敗",
       "installStarted": "インストール開始",
       "shareAcquired": "リンク取得成功",
@@ -486,6 +487,7 @@
     "msg": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}",
     "msgShare": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}\n\nAirDropを使用して友達と共有できます。",
     "msgFailed": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}\n\nエラー: {{error}}",
+    "msgAlreadyOwned": "{{appName}}\n{{userName}} / {{appleId}} - {{country}}\n\nこの Apple ID はすでにこの App のライセンスを所有しています。再取得は不要で、そのままダウンロードできます。",
     "downloadLimit": {
       "message": "{{appName}}\nアプリのサイズ {{size}} MB がサーバーの制限 {{limit}} MB を超えています。\n管理者に連絡するか、ご自身でサーバーを展開して再試行してください。"
     }
