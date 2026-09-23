@@ -4,8 +4,36 @@ import Spinner from '../common/Spinner';
 
 const SESSION_KEY = 'auth-token';
 
+// Safari throws on storage access when cookies are blocked (Settings → Safari →
+// Block All Cookies) and in some private/lockdown configurations. Reading or
+// writing the token must never take the whole app down, so every access is
+// guarded; a missing token simply means the password is asked for again.
+function readToken(): string | null {
+  try {
+    return sessionStorage.getItem(SESSION_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function clearToken(): void {
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    // Storage unavailable — nothing to clear.
+  }
+}
+
+function saveToken(token: string): void {
+  try {
+    sessionStorage.setItem(SESSION_KEY, token);
+  } catch {
+    // Storage unavailable — the session just won't be remembered.
+  }
+}
+
 export function getAccessToken(): string | null {
-  return sessionStorage.getItem(SESSION_KEY);
+  return readToken();
 }
 
 async function hashPassword(password: string): Promise<string> {
@@ -29,12 +57,12 @@ export default function PasswordGate({ children }: { children: ReactNode }) {
       .then((r) => r.json())
       .then(async (data: { required: boolean }) => {
         if (!data.required) {
-          sessionStorage.removeItem(SESSION_KEY);
+          clearToken();
           setStatus('verified');
           return;
         }
 
-        const storedToken = sessionStorage.getItem(SESSION_KEY);
+        const storedToken = readToken();
         if (storedToken) {
           // Validate stored token — it may be stale after a password change
           try {
@@ -51,7 +79,7 @@ export default function PasswordGate({ children }: { children: ReactNode }) {
           } catch {
             // Validation failed — fall through to show password form
           }
-          sessionStorage.removeItem(SESSION_KEY);
+          clearToken();
         }
 
         setStatus('required');
@@ -77,7 +105,7 @@ export default function PasswordGate({ children }: { children: ReactNode }) {
       const data = (await res.json()) as { ok: boolean };
 
       if (data.ok) {
-        sessionStorage.setItem(SESSION_KEY, hash);
+        saveToken(hash);
         setStatus('verified');
       } else {
         setError(t('auth.error'));
