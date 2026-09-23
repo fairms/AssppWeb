@@ -1,4 +1,13 @@
 {
+  "crash": {
+    "title": "Something went wrong",
+    "desc": "The page could not start. If this happened after an update, clearing local data normally fixes it.",
+    "reload": "Reload",
+    "reset": "Clear data & reload",
+    "resetting": "Clearing…",
+    "details": "Show details",
+    "hideDetails": "Hide details"
+  },
   "loading": "Loading...",
   "auth": {
     "title": "Access Password",

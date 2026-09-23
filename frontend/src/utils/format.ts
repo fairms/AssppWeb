@@ -15,3 +15,17 @@ export function formatBytes(value?: number | string): string {
 
   return `${amount.toFixed(digits)} ${units[unitIndex]}`;
 }
+
+/**
+ * Formats an App Store rating to one decimal, or returns null when the store
+ * did not report one. Apple omits `averageUserRating` for some storefronts and
+ * unrated apps, and calling `toFixed` on that `undefined` used to take the
+ * whole page down with it.
+ */
+export function formatRating(value?: number | null): string | null {
+  if (value === undefined || value === null) return null;
+  const rating = Number(value);
+  if (!Number.isFinite(rating)) return null;
+  return rating.toFixed(1);
+}
+

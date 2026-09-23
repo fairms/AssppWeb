@@ -1,4 +1,13 @@
 {
+  "crash": {
+    "title": "页面出错了",
+    "desc": "页面无法启动。如果是升级后出现的，通常清除本地数据即可恢复。",
+    "reload": "重新加载",
+    "reset": "清除数据并重载",
+    "resetting": "正在清除…",
+    "details": "显示详情",
+    "hideDetails": "隐藏详情"
+  },
   "loading": "加载中...",
   "auth": {
     "title": "访问密码",

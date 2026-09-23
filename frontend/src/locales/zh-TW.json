@@ -1,4 +1,13 @@
 {
+  "crash": {
+    "title": "頁面發生錯誤",
+    "desc": "頁面無法啟動。若是更新後才出現，通常清除本機資料即可恢復。",
+    "reload": "重新載入",
+    "reset": "清除資料並重新載入",
+    "resetting": "正在清除…",
+    "details": "顯示詳情",
+    "hideDetails": "隱藏詳情"
+  },
   "loading": "載入中...",
   "auth": {
     "title": "存取密碼",

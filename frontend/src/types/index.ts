@@ -7,8 +7,9 @@ export interface Software {
   artistName: string;
   sellerName: string;
   description: string;
-  averageUserRating: number;
-  userRatingCount: number;
+  /** Absent for unrated apps and some storefronts — treat as optional. */
+  averageUserRating?: number;
+  userRatingCount?: number;
   artworkUrl: string;
   screenshotUrls: string[];
   minimumOsVersion: string;

@@ -9,6 +9,7 @@ import { useAccounts } from "../../hooks/useAccounts";
 import { useSettingsStore } from "../../store/settings";
 import { useToastStore } from "../../store/toast";
 import { firstAccountCountry } from "../../utils/account";
+import { formatRating } from "../../utils/format";
 import { countryCodeMap, storeIdToCountry } from "../../apple/config";
 
 export default function SearchPage() {
@@ -134,39 +135,40 @@ export default function SearchPage() {
       {results.length > 0 && (
         <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 dark:bg-gray-900 dark:ring-white/10">
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            {results.map((app) => (
-              <Link
-                key={app.id}
-                to={`/search/${app.id}`}
-                state={{ app, country: activeCountry }}
-                className="flex items-center gap-4 p-4 transition-colors hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-gray-800/70 dark:active:bg-gray-800"
-              >
-                <AppIcon url={app.artworkUrl} name={app.name} size="md" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-gray-900 dark:text-white">
-                    {app.name}
-                  </p>
-                  <p className="truncate text-sm text-gray-500 dark:text-gray-400">
-                    {app.artistName}
-                  </p>
-                  <div className="mt-1 flex items-center gap-2 overflow-hidden text-xs text-gray-400 dark:text-gray-500">
-                    <span className="shrink-0">
-                      {app.formattedPrice ?? t("search.free")}
-                    </span>
-                    <span className="truncate">{app.primaryGenreName}</span>
-                    <span className="shrink-0">
-                      ★ {app.averageUserRating.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-                <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xl text-blue-600 dark:bg-gray-800 dark:text-blue-400"
-                  aria-hidden="true"
+            {results.map((app) => {
+              const rating = formatRating(app.averageUserRating);
+              return (
+                <Link
+                  key={app.id}
+                  to={`/search/${app.id}`}
+                  state={{ app, country: activeCountry }}
+                  className="flex items-center gap-4 p-4 transition-colors hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-gray-800/70 dark:active:bg-gray-800"
                 >
-                  ›
-                </span>
-              </Link>
-            ))}
+                  <AppIcon url={app.artworkUrl} name={app.name} size="md" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold text-gray-900 dark:text-white">
+                      {app.name}
+                    </p>
+                    <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                      {app.artistName}
+                    </p>
+                    <div className="mt-1 flex items-center gap-2 overflow-hidden text-xs text-gray-400 dark:text-gray-500">
+                      <span className="shrink-0">
+                        {app.formattedPrice ?? t("search.free")}
+                      </span>
+                      <span className="truncate">{app.primaryGenreName}</span>
+                      {rating && <span className="shrink-0">★ {rating}</span>}
+                    </div>
+                  </div>
+                  <span
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xl text-blue-600 dark:bg-gray-800 dark:text-blue-400"
+                    aria-hidden="true"
+                  >
+                    ›
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
