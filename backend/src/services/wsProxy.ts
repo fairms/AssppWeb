@@ -10,6 +10,14 @@ wisp.options.hostname_whitelist = [
   /^p\d+-buy\.itunes\.apple\.com$/,
   /^downloaddispatch\.itunes\.apple\.com$/,
   /^uclient-api\.itunes\.apple\.com$/,
+  // SAP request signing. The bag advertises the signer certificate on
+  // s.mzstatic.com (sign-sap-setup-cert) and the setup key exchange on
+  // fpinit.itunes.apple.com (sign-sap-setup). Both are public Apple services
+  // that carry no credentials. Without them the signer cannot complete its
+  // handshake, the X-Apple-ActionSignature header is never produced, and
+  // sign-in keeps failing with HTTP 403.
+  /^s\.mzstatic\.com$/,
+  /^fpinit\.itunes\.apple\.com$/,
 ];
 wisp.options.port_whitelist = [443];
 wisp.options.allow_direct_ip = false;
