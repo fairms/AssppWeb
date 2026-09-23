@@ -133,8 +133,16 @@ async function purchaseWithParams(
           );
         }
 
-        // Handle unknown error specific fallback mappings
-        let msg = customerMessage;
+        // Handle unknown error specific fallback mappings.
+        //
+        // Apple frequently leaves customerMessage generic ("An unknown error
+        // has occurred.") and puts the actionable reason in dialog.explanation
+        // — authenticate.ts already prefers the dialog text for exactly this
+        // reason. Fall back to it so the real cause is not discarded.
+        const dialogExplanation = (
+          dict.dialog as Record<string, any> | undefined
+        )?.explanation as string | undefined;
+        let msg = dialogExplanation ?? customerMessage;
         if (
           msg === "An unknown error has occurred" ||
           msg === "An unknown error has occurred."
@@ -142,8 +150,23 @@ async function purchaseWithParams(
           msg = i18n.t("errors.purchase.unknownError");
         }
 
+        // The failure code is the only stable identifier Apple gives us, so it
+        // always travels with the message: a bare "An unknown error has
+        // occurred." cannot be acted on or even reported. Only non-sensitive
+        // fields are logged — the raw plist can carry tokens and cookies, and
+        // this project never logs those.
+        console.warn("[purchase] buyProduct failed", {
+          failureType,
+          customerMessage,
+          dialogExplanation,
+          status: dict.status,
+          responseKeys: Object.keys(dict),
+        });
+
         throw new PurchaseError(
-          msg ?? i18n.t("errors.purchase.failed", { failureType }),
+          msg
+            ? `${msg} (${failureType})`
+            : i18n.t("errors.purchase.failed", { failureType }),
           failureType,
         );
       }

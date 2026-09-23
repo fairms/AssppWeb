@@ -93,8 +93,14 @@ export function useDownloadAction() {
       );
       await updateAccount(renewed);
       currentAccount = renewed;
-    } catch {
-      // Ignore — proceed with existing token
+    } catch (error) {
+      // Token renewal is best-effort and the stored token is usually still
+      // valid, so carry on — but swallowing this silently turns a specific
+      // authentication failure into a much vaguer purchase error later.
+      console.warn(
+        "Password token renewal failed; using the stored token",
+        error,
+      );
     }
 
     const result = await purchaseApp(currentAccount, app);
