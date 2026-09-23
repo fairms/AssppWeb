@@ -72,6 +72,13 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          # The Dockerfile already declares these as ARGs and exposes them as
+          # ENV, but nothing was feeding them, so every image reported
+          # "unknown". Passing them makes `docker inspect` on a running
+          # container say which commit it was built from.
+          build-args: |
+            BUILD_COMMIT=${{ github.sha }}
+            BUILD_DATE=${{ steps.meta.outputs.created }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ steps.image.outputs.name }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha,scope=${{ matrix.arch }}
           cache-to: type=gha,mode=max,scope=${{ matrix.arch }}
