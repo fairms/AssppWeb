@@ -437,6 +437,7 @@
   },
   "errors": {
     "download": {
+      "termsChanged": "この Apple ID は、更新された Apple メディアサービス利用規約に先に同意する必要があります。iPhone の App Store でこのアカウントにサインインし、表示される規約に同意してから再試行してください。",
       "redirectLocation": "リダイレクト先を取得できませんでした",
       "passwordExpired": "パスワードトークンの期限が切れています",
       "licenseRequired": "ライセンスが必要です - 先にアプリを購入してください",
@@ -450,6 +451,7 @@
       "tooManyRedirects": "リダイレクトが多すぎます"
     },
     "purchase": {
+      "termsChanged": "この Apple ID は、更新された Apple メディアサービス利用規約に先に同意する必要があります。iPhone の App Store でこのアカウントにサインインし、表示される規約に同意してから再試行してください。",
       "paidNotSupported": "有料アプリの購入はサポートされていません",
       "unavailable": "項目は一時的に利用できません",
       "passwordExpired": "パスワードトークンの期限が切れています",

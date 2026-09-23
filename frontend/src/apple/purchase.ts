@@ -121,6 +121,18 @@ async function purchaseWithParams(
           }
         }
 
+        // 3038 arrives with no termsPage action to follow — only the failure
+        // code and a customer message — so it needs its own instruction.
+        if (
+          failureType === "3038" ||
+          /terms and conditions|条款与条件|條款與條件/i.test(customerMessage ?? "")
+        ) {
+          throw new PurchaseError(
+            i18n.t("errors.purchase.termsChanged"),
+            failureType,
+          );
+        }
+
         // Handle unknown error specific fallback mappings
         let msg = customerMessage;
         if (

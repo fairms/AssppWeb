@@ -437,6 +437,7 @@
   },
   "errors": {
     "download": {
+      "termsChanged": "This Apple ID must accept the updated Apple Media Services Terms & Conditions first. Open the App Store on an iPhone, sign in with this account, accept the prompt, then retry.",
       "redirectLocation": "Failed to retrieve redirect location",
       "passwordExpired": "Password token is expired",
       "licenseRequired": "License required - purchase the app first",
@@ -450,6 +451,7 @@
       "tooManyRedirects": "Too many redirects"
     },
     "purchase": {
+      "termsChanged": "This Apple ID must accept the updated Apple Media Services Terms & Conditions first. Open the App Store on an iPhone, sign in with this account, accept the prompt, then retry.",
       "paidNotSupported": "Purchasing paid apps is not supported",
       "unavailable": "Item is temporarily unavailable",
       "passwordExpired": "Password token is expired",

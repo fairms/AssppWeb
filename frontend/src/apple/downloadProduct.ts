@@ -131,6 +131,18 @@ function requireItems(dict: Record<string, any>): void {
     }
     if (code === '9610')
       throw new DownloadError(i18n.t('errors.download.licenseRequired'), code);
+    // 3038 means the account has not accepted Apple's updated Media Services
+    // terms. Apple reports it as a bare failureType with no termsPage action to
+    // follow, so surface an instruction the user can act on rather than the raw
+    // storefront string.
+    if (
+      code === '3038' ||
+      /terms and conditions|条款与条件|條款與條件/i.test(
+        String(dict.customerMessage ?? ''),
+      )
+    ) {
+      throw new DownloadError(i18n.t('errors.download.termsChanged'), code);
+    }
     throw new DownloadError(
       `${dict.customerMessage || 'Apple download failed'} (${code})`,
       code,

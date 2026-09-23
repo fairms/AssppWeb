@@ -437,6 +437,7 @@
   },
   "errors": {
     "download": {
+      "termsChanged": "此 Apple ID 需要先同意更新後的 Apple 媒體服務條款與條件。請在 iPhone 上開啟 App Store，用該帳號登入並同意彈出的條款，然後重試。",
       "redirectLocation": "無法取得重新導向位址",
       "passwordExpired": "密碼權杖已過期",
       "licenseRequired": "需要授權 - 請先購買該應用程式",
@@ -450,6 +451,7 @@
       "tooManyRedirects": "重新導向次數過多"
     },
     "purchase": {
+      "termsChanged": "此 Apple ID 需要先同意更新後的 Apple 媒體服務條款與條件。請在 iPhone 上開啟 App Store，用該帳號登入並同意彈出的條款，然後重試。",
       "paidNotSupported": "不支援購買付費應用程式",
       "unavailable": "項目暫時無法使用",
       "passwordExpired": "密碼權杖已過期",
